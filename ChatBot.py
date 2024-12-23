@@ -1,28 +1,62 @@
 from OpenAIChatBot import OpenAIChatBot
+import pymssql
+import pandas as pd
+import warnings
 
 class Chatbot(OpenAIChatBot):
 
-    def __init__(self, Usuario, **kwargs):
-        super().__init__(Usuario, **kwargs)
-        self._hist_mess.append
+    def __init__(self, Usuario,ApiKey, **kwargs):
+        super().__init__(Usuario,ApiKey, **kwargs)
+
+        informacion=self.__ObtenerInformacionSQL()
+        mss={
+            "role": "system",
+            "content": f"Te voy a dar los siguientes pasos para que conviertas PLN en consultas a SQL Server: \n1. La base de datos contiene tablas de informacion contable y financiera tales como: la hoja de balance, el income statement, proveedores, clientes, transacciones y demas. \n2. Los nombres de las tablas y de los campos de las tablas son muy representativos, segun la peticion del usuario debes convertir el PLN en una consulta SQL que devuelva la informacion solicitada. \n3. Para lograrlo, a continuacion te muestro las tablas y campos de cada tabla de la base de datos:{informacion}\n4. Los trimestres vienen de la forma Q1,Q2,Q3 y Q4 \n5. Si la consulta del usuario no tiene nada que ver con la informacion contable o financiera proporcionada retornar (Puedes explicarte mejor?)\5. Recuerda anidar los campos en [] para los que tienen espacios o palabras reservadas"
+        }
+        warnings.filterwarnings("ignore")
+        self._hist_mess.append(mss)
 
     def __ObtenerInformacionSQL(self):
+        conn=pymssql.connect(server='127.0.0.1',database=self.Usuario.bbdd_name)
+        cursor=conn.cursor()
+        query=f"Select * from INFORMATION_SCHEMA.COLUMNS"
+        cursor.execute(query)
+        rows=cursor.fetchall()
 
+        tabla_actual=""
+        informacion=""
+        for row in rows:
+            if row[2]!=tabla_actual:
+                informacion+=f'{")" if len(informacion)!=0 else ""}\n-(Tabla: {row[2]}),(CAMPOS: {row[3]}'#Nombre,Id,Correo)'
+                tabla_actual=row[2]
+            else:
+                informacion+=','+row[3]
+        informacion+=')'#para cerrar el parentesis de la ultima tabla
+        conn.close()
+
+        return informacion
 
     def EnviarMensaje(self,Mensaje):
-        return "Mensaje"
+        mss={
+            "role": "user",
+            "content": Mensaje
+        }
+        sql=super().EnviarMensaje(mss)
+        respuesta=self.__traducir_sql(sql)
+        print(f'Mensaje: {Mensaje}\nSQL: {sql}')
+        return respuesta
     
     def CerrarChat(self):
         self.Usuario=None
         return "Chat cerrado satisfactoriamente, hasta la proxima"
     
-        messages=[
-                {
-                "role": "system",
-                "content": "Given the following SQL tables, your job is to write queries given a user’s request.\n    \n    CREATE TABLE Orders (\n      OrderID int,\n      CustomerID int,\n      OrderDate datetime,\n      OrderTime varchar(8),\n      PRIMARY KEY (OrderID)\n    );\n    \n    CREATE TABLE OrderDetails (\n      OrderDetailID int,\n      OrderID int,\n      ProductID int,\n      Quantity int,\n      PRIMARY KEY (OrderDetailID)\n    );\n    \n    CREATE TABLE Products (\n      ProductID int,\n      ProductName varchar(50),\n      Category varchar(50),\n      UnitPrice decimal(10, 2),\n      Stock int,\n      PRIMARY KEY (ProductID)\n    );\n    \n    CREATE TABLE Customers (\n      CustomerID int,\n      FirstName varchar(50),\n      LastName varchar(50),\n      Email varchar(100),\n      Phone varchar(20),\n      PRIMARY KEY (CustomerID)\n    );"
-                },
-                {
-                "role": "user",
-                "content": "Write a SQL query which computes the average total order value for all orders on 2023-04-01."
-                }
-            ],
+
+    def __traducir_sql(self,sql):
+        conn=pymssql.connect(server='127.0.0.1',database=self.Usuario.bbdd_name)
+        cursor=conn.cursor()
+
+        sql=sql.replace("``",'--')# Hay que formatera correctamente el sql
+        query=sql
+        Informacion=pd.read_sql(query,conn)
+        
+        return Informacion
