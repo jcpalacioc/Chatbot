@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 import time
 import warnings
+import json
 
 class SEC_API:
     def __init__(self,tickers_eps=None):
@@ -65,3 +66,21 @@ class SEC_API:
         self.tickers_eps=self._obtain_quaterly(self.tickers_eps)
         
         return self.tickers_eps
+    
+    def save_json(self,ticker):
+        cik=self.tickers[self.tickers['ticker'].isin([ticker])]['cik_str'].values[0]
+        url=f'https://data.sec.gov/api/xbrl/companyfacts/{cik}.json'
+        headers={'User-Agent':'palajnc@gmail.com'}
+
+        response=requests.get(url,headers=headers)
+        assets=pd.json_normalize(response.json())
+                    
+        try:
+            response=requests.get(url,headers=headers)
+            print(response)
+            assets=pd.json_normalize(response.json()['units']['USD/shares'])
+        except:
+            pass
+        print(assets)
+
+        with open(f'{ticker}.json', 'w') as json_file: json.dump(response.json(), json_file, indent=4)
