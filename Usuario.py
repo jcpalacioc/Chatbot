@@ -42,7 +42,7 @@ class Usuario():
 
         conn.close()
         password=row[3].replace("b'","").replace("'","")
-        print(password)
+        #print(password)
         return cls(row[0],row[1],row[2],password,row[4])
     
     #Retorna una representacion en string del usuario

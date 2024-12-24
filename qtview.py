@@ -37,5 +37,23 @@ class ChatbotView(QMainWindow):
         API_Key = os.getenv('API_Key')
 
         #Crear el chatbot
-        Chatbot=Chatbot(Usuario,API_Key)
+        self.Chat=Chatbot(Usuario,API_Key)
+        self.enviar_mss.clicked.connect(self.enviar_mensaje)
+        self.cerrar_ch.clicked.connect(self.cerrar_chat)
+
+    #Enviar un mensaje al chatbot que esta en el backend
+    def enviar_mensaje(self):
+        mensaje=self.txt_mensaje.text()
+        respuesta=self.Chat.EnviarMensaje(mensaje)
+        self.txt_chat.setText(f'{self.txt_chat.toPlainText()}\nTu: {mensaje}\nBot: {respuesta}')
+        self.txt_mensaje.setText('')
+
+    #Cerrar el chat desde el boton
+    def cerrar_chat(self):
+        respuesta=self.Chat.CerrarChat()
+        self.txt_chat.setText(f'{self.txt_chat.toPlainText()}\nBot: {respuesta}')
+        self.hide()
+        self.login=LoginView()
+        self.login.show()
+    
         

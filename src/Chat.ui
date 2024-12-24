@@ -28,7 +28,7 @@
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
    </property>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="enviar_mss">
     <property name="geometry">
      <rect>
       <x>70</x>
@@ -54,7 +54,7 @@ QPushButton#pushButton:pressed {
      <string>Enviar Mensaje</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="cerrar_ch">
     <property name="geometry">
      <rect>
       <x>300</x>
@@ -80,7 +80,7 @@ QPushButton#pushButton:pressed {
      <string>Cerrar Chat</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QLineEdit" name="txt_mensaje">
     <property name="geometry">
      <rect>
       <x>70</x>
@@ -90,7 +90,7 @@ QPushButton#pushButton:pressed {
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit">
+   <widget class="QTextEdit" name="txt_chat">
     <property name="geometry">
      <rect>
       <x>70</x>

@@ -2,6 +2,8 @@ from OpenAIChatBot import OpenAIChatBot
 import pymssql
 import pandas as pd
 import warnings
+from dotenv import load_dotenv
+import os
 
 #Esta clase hereda de OpenAIChatBot y crea un chatbot personalizado que convierte el NLP en consultas de SQL
 class Chatbot(OpenAIChatBot):
@@ -64,7 +66,13 @@ class Chatbot(OpenAIChatBot):
     
     #Traduce el SQL a un DataFrame para presentarlo mejor
     def __traducir_sql(self,sql):
-        conn=pymssql.connect(server='127.0.0.1',database=self.Usuario.bbdd_name)
+        load_dotenv()
+        PASSW = os.getenv(self.Usuario.bbdd_name+'_SQL_PASS')
+        print(self.Usuario.nombre,self.Usuario.bbdd_name+'_SQL_PASS')
+
+        conn=pymssql.connect(
+            server='127.0.0.1',database=self.Usuario.bbdd_name,user=self.Usuario.nombre,password=PASSW
+        )
         cursor=conn.cursor()
 
         sql=sql.replace("``",'--')# Hay que formatera correctamente el sql
