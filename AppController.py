@@ -1,8 +1,12 @@
 from Usuario import Usuario
 import bcrypt
 
+#Controlador de la aplicación
 class AppController():
 
+    #Metodo para iniciar sesión
+    #Recibe el correo y la contraseña
+    #Retorna un booleano y el usuario si existe
     @classmethod
     def Login(cls,correo,password):
         usuario=Usuario.Obtener(correo)

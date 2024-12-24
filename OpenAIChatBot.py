@@ -1,9 +1,10 @@
 from AbstractChatbot import AbstractChatbot
 from openai import OpenAI
 
-
+#Crea un chatbot que utiliza la API de OpenAI para responder mensajes
 class OpenAIChatBot(AbstractChatbot):
 
+    #Recibe un Usuario y un ApiKey y parametros de configuracion del modelo GPT
     def __init__(self, Usuario,ApiKey,**kwargs):
         super().__init__(Usuario)
         self.__client = OpenAI(api_key=ApiKey)
@@ -15,7 +16,8 @@ class OpenAIChatBot(AbstractChatbot):
         self.top_p=kwargs.get('top_p',1)
 
         
-
+    #Recibe un mensaje y lo envia a OpenAI para obtener una respuesta
+    #Guarda el mensaje en el historial de mensajes
     def EnviarMensaje(self,Mensaje):
         self._hist_mess.append(Mensaje)
 
@@ -33,6 +35,7 @@ class OpenAIChatBot(AbstractChatbot):
 
         return response.choices[0].message.content
     
+    #Cierra el chat
     def CerrarChat(self):
         self._hist_mess=[]
         return "Chat cerrado satisfactoriamente, hasta la proxima"

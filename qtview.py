@@ -5,12 +5,15 @@ from ChatBot import Chatbot
 from dotenv import load_dotenv
 import os
 
+#Esta clase es la vista de la aplicacion para el login
 class LoginView(QMainWindow):
+
     def __init__(self):
         super().__init__()
         uic.loadUi('src/Login.ui', self)
         self.btn_iniciar_session.clicked.connect(self.iniciar_session)
     
+
     def iniciar_session(self):
         correo=self.txt_correo.text()
         password=self.txt_pass.text()
@@ -23,14 +26,16 @@ class LoginView(QMainWindow):
         else:
             self.lbl_error.setText("Correo o contraseña incorrecta")
 
+#Esta clase es la vista de la aplicacion para el panel del chat
 class ChatbotView(QMainWindow):
     def __init__(self,Usuario):
         super().__init__()
-
+        #Cargo la interfaz grafica
         uic.loadUi('src/Chat.ui', self)
         
         load_dotenv()
         API_Key = os.getenv('API_Key')
 
+        #Crear el chatbot
         Chatbot=Chatbot(Usuario,API_Key)
         

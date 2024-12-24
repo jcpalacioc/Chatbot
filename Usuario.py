@@ -3,6 +3,7 @@ import pymssql
 
 class Usuario():
 
+    #Crear un usuario
     def __init__(self,nombre,correo,id,password,bbdd_name):
         self.nombre=nombre
         self.correo=correo
@@ -18,6 +19,7 @@ class Usuario():
         contraseña_hash = bcrypt.hashpw(contraseña.encode('utf-8'), sal)
         return str(contraseña_hash)
     
+    #Guardar el usuario en la base de datos
     def Guardar(self):
         conn=pymssql.connect(server='127.0.0.1',database='Usuarios')
         cursor=conn.cursor()
@@ -28,6 +30,8 @@ class Usuario():
         conn.commit()
         conn.close()
 
+
+    #Obtener un usuario de la base de datos dado su correo
     @classmethod
     def Obtener(cls,correo):
         conn=pymssql.connect(server='127.0.0.1',database='Usuarios')
@@ -41,5 +45,6 @@ class Usuario():
         print(password)
         return cls(row[0],row[1],row[2],password,row[4])
     
+    #Retorna una representacion en string del usuario
     def __str__(self):
         return f"Nombre: {self.nombre}\nCorreo: {self.correo}\nId: {self.id}\nContraseña: {self.password}"
