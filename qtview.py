@@ -45,7 +45,7 @@ class ChatbotView(QMainWindow):
     def enviar_mensaje(self):
         mensaje=self.txt_mensaje.text()
         respuesta=self.Chat.EnviarMensaje(mensaje)
-        self.txt_chat.setText(f'{self.txt_chat.toPlainText()}\nTu: {mensaje}\nBot: {respuesta}')
+        self.txt_chat.setText(f'{self.txt_chat.toPlainText()}\n \n Tu: {mensaje}\nBot: {respuesta}')
         self.txt_mensaje.setText('')
 
     #Cerrar el chat desde el boton

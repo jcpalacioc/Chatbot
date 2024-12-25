@@ -68,7 +68,7 @@ class Chatbot(OpenAIChatBot):
     def __traducir_sql(self,sql):
         load_dotenv()
         PASSW = os.getenv(self.Usuario.bbdd_name+'_SQL_PASS')
-        print(self.Usuario.nombre,self.Usuario.bbdd_name+'_SQL_PASS')
+        #print(self.Usuario.nombre,self.Usuario.bbdd_name+'_SQL_PASS')
 
         conn=pymssql.connect(
             server='127.0.0.1',database=self.Usuario.bbdd_name,user=self.Usuario.nombre,password=PASSW
